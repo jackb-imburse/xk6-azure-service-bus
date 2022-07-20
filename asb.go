@@ -2,16 +2,16 @@ package asb
 
 import (
 	"context"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
 	"go.k6.io/k6/js/modules"
 )
 
 func init() {
-    modules.Register("k6/x/azure-service-bus", new(Asb))
+	modules.Register("k6/x/azure-service-bus", new(Asb))
 }
 
-type Asb struct{
-
+type Asb struct {
 }
 
 func (a *Asb) GetClient(connectionString string) *azservicebus.Client {
@@ -25,7 +25,7 @@ func (a *Asb) GetClient(connectionString string) *azservicebus.Client {
 	return client
 }
 
-func (a *Asb) SendMessage(queue string, message string, client *azservicebus.Client) {
+func (a *Asb) SendMessage(queue string, correlationId string, subject string, bodyDecoded string, client *azservicebus.Client) {
 	sender, err := client.NewSender(queue, nil)
 	if err != nil {
 		panic(err)
@@ -33,7 +33,9 @@ func (a *Asb) SendMessage(queue string, message string, client *azservicebus.Cli
 	defer sender.Close(context.TODO())
 
 	sbMessage := &azservicebus.Message{
-		Body: []byte(message),
+		CorrelationID: &correlationId,
+		Subject:       &subject,
+		Body:          []byte(bodyDecoded),
 	}
 	err = sender.SendMessage(context.TODO(), sbMessage, nil)
 	if err != nil {
