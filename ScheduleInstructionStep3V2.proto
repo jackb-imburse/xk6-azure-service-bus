@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+option go_package = "./imburse.protobuf";
+
+package imburse;
+
+message ScheduleInstructionStep3V2 {
+    string correlationId = 1;
+    imburse.Guid requestId = 2;
+    imburse.Guid tenantId = 3;
+    string customerRef = 4;
+    imburse.Guid financialInstrumentId = 5;
+    string workflowId = 6;
+    string orderRef = 7;
+    string instructionRef = 8;
+    string country = 9;
+    string currency = 10;
+    imburse.Decimal amount = 11;
+    imburse.DateTime requestedSettlementDate = 12;
+    imburse.DateTime forecastedSettlementDate = 13;
+    imburse.DateTime scheduledExecutionTimestamp = 14;
+    string appId = 15;
+    string appQueue = 16;
+    string paymentMethod = 17;
+}   
+
+message DateTime {
+    sint64 value = 1; // the offset (in units of the selected scale) from 1970/01/01
+    TimeSpanScale scale = 2; // the scale of the timespan [default = DAYS]
+    DateTimeKind kind = 3; // the kind of date/time being represented [default = UNSPECIFIED]
+    enum TimeSpanScale {
+      DAYS = 0;
+      HOURS = 1;
+      MINUTES = 2;
+      SECONDS = 3;
+      MILLISECONDS = 4;
+      TICKS = 5;
+  
+      MINMAX = 15; // dubious
+    }
+    enum DateTimeKind
+    {     
+       // The time represented is not specified as either local time or Coordinated Universal Time (UTC).
+       UNSPECIFIED = 0;
+       // The time represented is UTC.
+       UTC = 1;
+       // The time represented is local time.
+       LOCAL = 2;
+     }
+  }
+
+  message Guid {
+    fixed64 lo = 1; // the first 8 bytes of the guid (note:crazy-endian)
+    fixed64 hi = 2; // the second 8 bytes of the guid (note:crazy-endian)
+  }
+  
+  message Decimal {
+    uint64 lo = 1; // the first 64 bits of the underlying value
+    uint32 hi = 2; // the last 32 bis of the underlying value
+    uint32 signScale = 3; // the number of decimal digits (bits 1-16), and the sign (bit 0)
+  }
