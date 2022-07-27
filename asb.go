@@ -63,7 +63,7 @@ func (a *Asb) GetClient(connectionString string) *azservicebus.Client {
 	return client
 }
 
-func (a *Asb) SendMessage(queue string, correlationId string, subject string, bodyDecoded string, client *azservicebus.Client) {
+func (a *Asb) EncodeStringBodyAndSendMessage(queue string, correlationId string, subject string, bodyDecoded string, client *azservicebus.Client) {
 	sender, err := client.NewSender(queue, nil)
 	if err != nil {
 		panic(err)
